@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "PasswordsGenerator",
+    "slug": "PasswordsGenerator",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ]
+  }
+}

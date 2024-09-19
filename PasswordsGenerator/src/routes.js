@@ -14,7 +14,9 @@ export function Routes() {
                 <Tab.Screen
                     name="home"
                     component={Home}
-                    options={{headerShown: false,
+                    options={{
+                        tabBarShowLabel: false,
+                        headerShown: false,
                         tabBarIcon: ({focused, size,color})=> {
                             if(focused){
                                 return <Ionicons size={size} color={color} name="home" />
@@ -29,7 +31,9 @@ export function Routes() {
                 <Tab.Screen
                     name="passwords"
                     component={Passwords}
-                    options={{headerShown: false,
+                    options={{
+                        tabBarShowLabel: false,
+                        headerShown: false,
                         tabBarIcon: ({focused, size,color})=> {
                             if(focused){
                                 return <Ionicons size={size} color={color} name="lock-closed" />

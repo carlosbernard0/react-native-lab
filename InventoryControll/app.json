@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "InventoryControll",
+    "slug": "InventoryControll",
+    "scheme": "InventoryControll",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/sispro-logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/sispro-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/sispro-logo.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}

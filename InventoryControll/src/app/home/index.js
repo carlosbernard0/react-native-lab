@@ -4,30 +4,57 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker} from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import axios from 'axios'
 
 
-const listEstablishment = ['estabelecimento 1', 'estabelecimento 2', 'estabelecimento 3', 'estabelecimento 4']
+
 const listBusiness = ['Work', 'Negocio 2', 'Negocio 3']
 
 const Home = () => {
+    let listEstablishment = Array()
     const router = useRouter();
     const [selectedEstablishment , setSelectedEstablishment] = useState('')
     const [ typeOfBusiness, setTypeOfBusiness] = useState('')
     const [isShowSecondPicker, setIsShowSecondPicker] = useState(false) 
 
 
+    const getList = async () => {
+        const response = await axios.get('http://makhom.sispro.com.br/ORC/WsObterDepositos.rule?sys=ORC&Login=ABIMAEL')
+
+        // console.log(response.data)
+        const listResponse = response.data;
+
+        for (let i = 0; i < listResponse.length; i++) {
+            listEstablishment[i] = listResponse[i].SC_ESTAB
+        }
+        console.log(listEstablishment)
+    }
+
     useEffect(()=> {
         if(selectedEstablishment != ''){
             setIsShowSecondPicker(true)
         }
+
+        if(listEstablishment.length == 0){
+            getList()
+        }
+
+
+
     },[selectedEstablishment])
 
     const searchProduct = () => {
         router.push('/products')
     }
 
+    const logout = () => {
+        router.push('/')
+    }
+
     return(
         <SafeAreaView>
+            <TouchableOpacity onPress={getList}><Text>Teste</Text></TouchableOpacity>
+
             <View style={ styles.container}>
                 <View style={styles.contentContainer}>
                     <View style={styles.header}>
@@ -71,7 +98,7 @@ const Home = () => {
                                 <Text style={styles.textButton}>Produto</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.buttonLogout}>
+                            <TouchableOpacity style={styles.buttonLogout} onPress={logout}>
                                 <MaterialCommunityIcons name="logout" size={24} color="black" />
                                 <Text style={styles.textLogout}>Logout</Text>
                             </TouchableOpacity>

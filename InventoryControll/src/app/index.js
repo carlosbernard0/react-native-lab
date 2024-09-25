@@ -1,44 +1,46 @@
 import { useRouter, Link } from 'expo-router';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {StyleSheet, Image, Text, TextInput, View, TouchableOpacity, Modal} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import imageSispro from '../../assets/sispro-letreiro.png'
 import ModalForgotPass from './components/modals/ModalForgotPass.js';
 import ModalFirstAcess from './components/modals/ModalFirstAcess.js';
 import axios from 'axios';
+import MyContext from './context/MyContext.js';
 
 const Login = () => {
     const router = useRouter()
-    const [login, setLogin] = useState('')
-    const [password, setPassword] = useState('')
+    const {login, setLogin} = useContext(MyContext)
+    const [password, setPassword] = useState("")
     const [isShowModalForgot , setIsShowModalForgot] = useState(false)
     const [isShowModalFirstAcess , setIsShowModalFirstAcess] = useState(false)
+    const [dataJson,setDataJson] = useState({"Login": `${login}`, "Senha": `${password}`})
 
-    const data = {
-        "Login":{login},
-        "Senha":{password}
-    }
+    useEffect(()=>{
+        setDataJson({"Login": `${login}`, "Senha": `${password}`})
+    },[password,login])
 
     const url = 'http://makhom.sispro.com.br/ORC/WsLogin.rule?sys=ORC'
-
+    
     const makeLogin = async () => {
         try {
-            // const response = await axios.post(url,data);
-            const response = await axios.post(url, {
-                "Login":"ABIMAEL",
-                "Senha":"12345"  
-            });
+            const response = await axios.post(url,dataJson);
+            // const response = await axios.post(url, {
+                //     "Login":"ABIMAEL",
+                //     "Senha":"12345"  
+                // });
+                
+                console.log(dataJson)
+                
+                console.log(response.data)
             
-                 
-            console.log(response.data)
+            const loginSuccess = response.data.LoginSuccess
             
-            // const loginSuccess = response.data.LoginSuccess
-            
-            // if(loginSuccess) {
-            //     router.push('/home')
-            // }else{
-            //     alert('Acesso negado! Usuário ou senha não conferem. Entre em contato com o administrador.')
-            // }
+            if(loginSuccess == 'true') {
+                router.push('/home')
+            }else{
+                alert('Acesso negado! Usuário ou senha não conferem. Entre em contato com o administrador.')
+            }
         } catch (error) {
             console.error("error" ,error);
         }
@@ -97,6 +99,7 @@ const Login = () => {
                     <Modal
                         visible={isShowModalForgot}
                         animationType="fade"
+                        transparent={true}
                     >
                         <ModalForgotPass setIsShowModal={setIsShowModalForgot}/>
                         
@@ -104,6 +107,7 @@ const Login = () => {
                     <Modal
                         visible={isShowModalFirstAcess}
                         animationType="fade"
+                        transparent={true}
                     >
                         <ModalFirstAcess setIsShowModal={setIsShowModalFirstAcess}/>
                         
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
     },
 
     contentContainer :{
-        width: '30%', 
+        width: '80%', 
         padding: 5
        
     },
@@ -140,7 +144,7 @@ const styles = StyleSheet.create({
 
     text: {
        fontSize: 15, 
-       marginTop: 20
+       marginTop: 20,
 
     },
     textInput :{

@@ -1,33 +1,46 @@
 import { useRouter } from 'expo-router';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native'
+import {Text, View, StyleSheet, TouchableOpacity, FlatList, Pressable} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker} from '@react-native-picker/picker';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import axios from 'axios'
+import MyContext from '../context/MyContext';
 
 
 
 const listBusiness = ['Work', 'Negocio 2', 'Negocio 3']
 
 const Home = () => {
-    let listEstablishment = Array()
+    const {login} = useContext(MyContext);
     const router = useRouter();
     const [selectedEstablishment , setSelectedEstablishment] = useState('')
-    const [ typeOfBusiness, setTypeOfBusiness] = useState('')
-    const [isShowSecondPicker, setIsShowSecondPicker] = useState(false) 
+    const [typeOfBusiness, setTypeOfBusiness] = useState('')
+    const [isShowSecondPicker, setIsShowSecondPicker] = useState(false)
+    const [listEstablishment, setListEstablishment] = useState([])
+    const [listTypeBusiness, setListTypeBusiness] = useState([])
+    const [cdEstab, setCdEstab] = useState('')
 
 
-    const getList = async () => {
+
+    const getListEstablishment = async () => {
         const response = await axios.get('http://makhom.sispro.com.br/ORC/WsObterDepositos.rule?sys=ORC&Login=ABIMAEL')
 
-        // console.log(response.data)
         const listResponse = response.data;
+        console.log(listResponse)   
+        setListEstablishment(['',...listResponse])
 
-        for (let i = 0; i < listResponse.length; i++) {
-            listEstablishment[i] = listResponse[i].SC_ESTAB
-        }
-        console.log(listEstablishment)
+
+    }
+
+    const getListTypeBusiness = async() => {
+        const response = await axios.get(`http://makhom.sispro.com.br/ORC/WsTipoNegocio.rule?sys=ORC&Usuario=${login}&CDEstab=${cdEstab}`)
+        // const response = await axios.get(`http://makhom.sispro.com.br/ORC/WsTipoNegocio.rule?sys=ORC&Usuario=ABIMAEL&CDEstab=${cdEstab}`)
+
+        const listResponse = response.data;
+        setListTypeBusiness(['',...listResponse])
+
+
     }
 
     useEffect(()=> {
@@ -36,24 +49,43 @@ const Home = () => {
         }
 
         if(listEstablishment.length == 0){
-            getList()
+            getListEstablishment()
         }
 
-
+        if(selectedEstablishment != ''){
+            getListTypeBusiness()
+        }
 
     },[selectedEstablishment])
+
+    const changeSelectedEstablishment = (item) => {
+        setSelectedEstablishment(item)
+        console.log(listEstablishment)
+        for (let i = 0; i < listEstablishment.length; i++) {
+            if(listEstablishment[i].SC_ESTAB == item){
+                setCdEstab(listEstablishment[i].CD_ESTAB)
+            }
+                            
+        }
+        // setListEstablishment(listEstablishment.filter(item => item != ''))
+        //FILTER COMO FUNCIONA??        
+    }
+
 
     const searchProduct = () => {
         router.push('/products')
     }
 
-    const logout = () => {
-        router.push('/')
-    }
+   
 
     return(
-        <SafeAreaView>
-            <TouchableOpacity onPress={getList}><Text>Teste</Text></TouchableOpacity>
+        <SafeAreaView>  
+            <Pressable onPress={changeSelectedEstablishment}>
+                <Text>{login}</Text>
+            </Pressable>
+            <Pressable onPress={test}>
+                <Text>test</Text>
+            </Pressable>
 
             <View style={ styles.container}>
                 <View style={styles.contentContainer}>
@@ -66,11 +98,11 @@ const Home = () => {
                             <Text style={styles.text}>Estabelecimento</Text>
                             <Picker
                                 selectedValue={selectedEstablishment}
-                                onValueChange={(itemValue) => setSelectedEstablishment(itemValue)}
+                                onValueChange={(itemValue) => changeSelectedEstablishment(itemValue)}
                                 style={styles.picker}
                             >
                                 {listEstablishment.map((item) => (
-                                    <Picker.Item label={item} value={item}/>
+                                    <Picker.Item key={item.CD_ESTAB} label={item.SC_ESTAB} value={item.SC_ESTAB}/>
                                 ))}
                             </Picker>
 
@@ -89,8 +121,8 @@ const Home = () => {
                                 onValueChange={(itemValue) => setTypeOfBusiness(itemValue)}
                                 style={styles.picker}
                             >
-                                {listBusiness.map((item) => (
-                                    <Picker.Item label={item} value={item}/>
+                                {listTypeBusiness.map((item) => (
+                                    <Picker.Item key={item.CD_NEGOC_TIPO} label={item.DS_NEGOC_TIPO} value={item.DS_NEGOC_TIPO}/>
                                 ))}
                             </Picker>
 
@@ -98,7 +130,7 @@ const Home = () => {
                                 <Text style={styles.textButton}>Produto</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.buttonLogout} onPress={logout}>
+                            <TouchableOpacity style={styles.buttonLogout} onPress={()=>{router.back()}}>
                                 <MaterialCommunityIcons name="logout" size={24} color="black" />
                                 <Text style={styles.textLogout}>Logout</Text>
                             </TouchableOpacity>
@@ -126,7 +158,7 @@ const styles = StyleSheet.create({
     },
 
     contentContainer :{
-        width: '30%', 
+        width: '80%', 
         padding: 5
        
     },

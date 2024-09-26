@@ -9,14 +9,14 @@ import MyContext from '../context/MyContext';
 
 
 
-const listBusiness = ['Work', 'Negocio 2', 'Negocio 3']
 
 const Home = () => {
-    const {login} = useContext(MyContext);
+    const {login, setLogin} = useContext(MyContext);
+    const {setPassword} = useContext(MyContext);
     const router = useRouter();
-    const [selectedEstablishment , setSelectedEstablishment] = useState('')
-    const [typeOfBusiness, setTypeOfBusiness] = useState('')
-    const [isShowSecondPicker, setIsShowSecondPicker] = useState(false)
+    const {selectedEstablishment , setSelectedEstablishment} = useContext(MyContext)
+    const [selectedTypeOfBusiness, setSelectedTypeOfBusiness] = useState('')
+    const {isShowSecondPicker, setIsShowSecondPicker} = useContext(MyContext)
     const [listEstablishment, setListEstablishment] = useState([])
     const [listTypeBusiness, setListTypeBusiness] = useState([])
     const [cdEstab, setCdEstab] = useState('')
@@ -24,21 +24,37 @@ const Home = () => {
 
 
     const getListEstablishment = async () => {
-        const response = await axios.get('http://makhom.sispro.com.br/ORC/WsObterDepositos.rule?sys=ORC&Login=ABIMAEL')
+        try{
+            const response = await axios.get('http://makhom.sispro.com.br/ORC/WsObterDepositos.rule?sys=ORC&Login=ABIMAEL')
+    
+            const listResponse = response.data;
+            setListEstablishment([' a',...listResponse])
+            console.log(listResponse)
 
-        const listResponse = response.data;
-        console.log(listResponse)   
-        setListEstablishment(['',...listResponse])
+        }catch(error){
+            console.log("Erro no getListEstablishment ", error)
+        }
 
 
     }
 
     const getListTypeBusiness = async() => {
-        const response = await axios.get(`http://makhom.sispro.com.br/ORC/WsTipoNegocio.rule?sys=ORC&Usuario=${login}&CDEstab=${cdEstab}`)
-        // const response = await axios.get(`http://makhom.sispro.com.br/ORC/WsTipoNegocio.rule?sys=ORC&Usuario=ABIMAEL&CDEstab=${cdEstab}`)
 
-        const listResponse = response.data;
-        setListTypeBusiness(['',...listResponse])
+        try{
+            const response = await axios.get(`http://makhom.sispro.com.br/ORC/WsTipoNegocio.rule?sys=ORC&Usuario=${login}&CDEstab=${cdEstab}`)
+            // const response = await axios.get(`http://makhom.sispro.com.br/ORC/WsTipoNegocio.rule?sys=ORC&Usuario=ABIMAEL&CDEstab=${cdEstab}`)
+    
+            const listResponse = response.data;
+            console.log(listResponse);
+            if(listResponse && listResponse.msgError){
+                console.log("Erro de requisicao : A lista nao é iteravel")
+            }else{
+                setListTypeBusiness([' ',...listResponse])
+            }
+
+        }catch(error){
+            console.log(error);
+        }
 
 
     }
@@ -67,8 +83,7 @@ const Home = () => {
             }
                             
         }
-        // setListEstablishment(listEstablishment.filter(item => item != ''))
-        //FILTER COMO FUNCIONA??        
+               
     }
 
 
@@ -76,22 +91,22 @@ const Home = () => {
         router.push('/products')
     }
 
+    const logout = () => {
+        setLogin('')
+        setPassword('')
+        router.back()
+    }
    
+    const listFruits = ['apple', 'banana', 'melon', 'pineapple', 'grape']
+
 
     return(
-        <SafeAreaView>  
-            <Pressable onPress={changeSelectedEstablishment}>
-                <Text>{login}</Text>
-            </Pressable>
-            <Pressable onPress={test}>
-                <Text>test</Text>
-            </Pressable>
-
+        <SafeAreaView style={{flex: 1}}>  
             <View style={ styles.container}>
-                <View style={styles.contentContainer}>
-                    <View style={styles.header}>
+                <View style={styles.header}>
                         <Text style={ styles.textHeader}>.</Text>
-                    </View>
+                </View>
+                <View style={styles.contentContainer}>
 
                     {selectedEstablishment == '' ?(
                         <View style={styles.firstViewPicker}>
@@ -117,8 +132,8 @@ const Home = () => {
                         <View style={styles.firstViewPicker}>
                             <Text style={styles.text}>Tipo de negócio</Text>
                             <Picker
-                                selectedValue={typeOfBusiness}
-                                onValueChange={(itemValue) => setTypeOfBusiness(itemValue)}
+                                selectedValue={selectedTypeOfBusiness}
+                                onValueChange={(itemValue) => setSelectedTypeOfBusiness(itemValue)}
                                 style={styles.picker}
                             >
                                 {listTypeBusiness.map((item) => (
@@ -130,7 +145,7 @@ const Home = () => {
                                 <Text style={styles.textButton}>Produto</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.buttonLogout} onPress={()=>{router.back()}}>
+                            <TouchableOpacity style={styles.buttonLogout} onPress={logout}>
                                 <MaterialCommunityIcons name="logout" size={24} color="black" />
                                 <Text style={styles.textLogout}>Logout</Text>
                             </TouchableOpacity>
@@ -152,20 +167,16 @@ export default Home;
 
 const styles = StyleSheet.create({
     container:  {
-        flex: 1, 
-        justifyContent: "center",
-        alignItems: "center",
     },
 
     contentContainer :{
-        width: '80%', 
         padding: 5
-       
     },
 
     header: {
         backgroundColor: '#003aa0',
-        height: 90
+        height: 90,
+
         
         
     },

@@ -1,4 +1,4 @@
-import { useRouter, Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import {StyleSheet, Image, Text, TextInput, View, TouchableOpacity, Modal} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,13 +11,20 @@ import MyContext from './context/MyContext.js';
 const Login = () => {
     const router = useRouter()
     const {login, setLogin} = useContext(MyContext)
-    const [password, setPassword] = useState("")
+    const {password, setPassword} = useContext(MyContext)
     const [isShowModalForgot , setIsShowModalForgot] = useState(false)
     const [isShowModalFirstAcess , setIsShowModalFirstAcess] = useState(false)
-    const [dataJson,setDataJson] = useState({"Login": `${login}`, "Senha": `${password}`})
+    const [dataJson,setDataJson] = useState({"Login": `${login}`, "Senha": `${password}`})    
+    const {setSelectedEstablishment} = useContext(MyContext)
+    const {setIsShowSecondPicker} = useContext(MyContext)
 
     useEffect(()=>{
-        setDataJson({"Login": `${login}`, "Senha": `${password}`})
+        if(login == ''){
+            setIsShowSecondPicker(false)
+            setSelectedEstablishment('')
+        }
+        setDataJson({"Login": `${login.toUpperCase()}`, "Senha": `${password}`})
+
     },[password,login])
 
     const url = 'http://makhom.sispro.com.br/ORC/WsLogin.rule?sys=ORC'
@@ -47,12 +54,7 @@ const Login = () => {
     };
     
     return(
-        <SafeAreaView>
-
-            <Text>{login}</Text>
-            <Text>{password}</Text>
-            <Text onPress={()=> {router.push('/home')}}>Passar tela</Text>
-
+        <SafeAreaView style={{flex: 1}}>
             <View style={styles.container}>
                 <View style={styles.contentContainer}>
                     <Image
@@ -64,6 +66,7 @@ const Login = () => {
                         Usuário:
                     </Text>
                     <TextInput
+                        value={login}
                         style={styles.textInput}
                         placeholder="Usuário"
                         onChangeText={(value) => setLogin(value)}
@@ -72,10 +75,11 @@ const Login = () => {
                         Senha:
                     </Text>
                     <TextInput
+                        value={password}
                         style={styles.textInput}
                         placeholder='Senha'
                         onChangeText={(value) => setPassword(value)}
-
+                        secureTextEntry={true}
                     />
 
                     <TouchableOpacity style={styles.buttonAcess} onPress={makeLogin}>
@@ -91,7 +95,7 @@ const Login = () => {
                     </TouchableOpacity>
                     
                     <View style={styles.footer}>
-                        <Text>
+                        <Text style={styles.footerText}>
                         Desenvolvido por SISPRO S/A Serviços e Tecnologia da Informação ©2023 Todos os direitos reservados
                         </Text>
                     </View>
@@ -99,7 +103,6 @@ const Login = () => {
                     <Modal
                         visible={isShowModalForgot}
                         animationType="fade"
-                        transparent={true}
                     >
                         <ModalForgotPass setIsShowModal={setIsShowModalForgot}/>
                         
@@ -107,7 +110,6 @@ const Login = () => {
                     <Modal
                         visible={isShowModalFirstAcess}
                         animationType="fade"
-                        transparent={true}
                     >
                         <ModalFirstAcess setIsShowModal={setIsShowModalFirstAcess}/>
                         
@@ -123,14 +125,14 @@ export default Login;
 
 const styles = StyleSheet.create({
     container:  {
-        flex: 1, 
         justifyContent: "center",
         alignItems: "center",
     },
 
     contentContainer :{
         width: '80%', 
-        padding: 5
+        padding: 5,
+        flexGrow: 1
        
     },
     image: {
@@ -154,6 +156,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 15,
         borderWidth: 1, 
+        color: 'black'
 
     },
 
@@ -180,7 +183,12 @@ const styles = StyleSheet.create({
 
     footer: {
         width: '100%',  
-        marginTop: 30
+        marginTop: 30,
+       
+    },
+
+    footerText: {
+         textAlign: 'center'
     }
 
 

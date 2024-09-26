@@ -6,9 +6,12 @@ import { useState } from "react";
 
 const Layout = ()=> {
     const [login, setLogin] = useState('')
+    const [selectedEstablishment , setSelectedEstablishment] = useState('')
+    const [password, setPassword] = useState("")
+    const [isShowSecondPicker, setIsShowSecondPicker] = useState(false)
 
     return(
-        <MyContext.Provider value={{login,setLogin}}>
+        <MyContext.Provider value={{login,setLogin, selectedEstablishment, setSelectedEstablishment, password, setPassword, isShowSecondPicker, setIsShowSecondPicker}}>
             <Stack>
                 <Stack.Screen name="index" options={{title: "Login"}}/>
                 <Stack.Screen name="home/index" options={{title: "Home"}}/>

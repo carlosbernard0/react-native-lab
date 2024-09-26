@@ -1,28 +1,39 @@
-import { TouchableOpacity, View, StyleSheet, Text, FlatList } from "react-native"
+import { TouchableOpacity, View, StyleSheet, Text, FlatList, ScrollView } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useRouter } from "expo-router";
+import { useContext, useEffect } from "react";
+import MyContext from "../context/MyContext";
 
 
-const listFruits = ['apple', 'banana', 'melon', 'pineapple', 'grape']
+const listFruits = ['apple', 'banana', 'melon', 'pineapple', 'grape','S']
 
 const ProductsList = () => {
     const router = useRouter()
+    const {setSelectedEstablishment} = useContext(MyContext)
+    const {setIsShowSecondPicker} = useContext(MyContext)
+
+    const backToHome = () => {
+        setSelectedEstablishment('')
+        setIsShowSecondPicker(false)
+        router.back()
+    }
+
 
     return(
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1}}>
             <View style={styles.container}>
-                <View style={styles.contentContainer}>
-                    <View style={styles.header}>
-                        <TouchableOpacity style={styles.buttonHeader} onPress={router.back}>
-                            <FontAwesome6 name="house-chimney" size={24} color="white" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttonHeader} onPress={router.back}>
-                            <AntDesign name="back" size={24} color="white" />
-                        </TouchableOpacity>
-                    </View>
+                <View style={styles.header}>
+                            <TouchableOpacity style={styles.buttonHeader} onPress={backToHome}>
+                                <FontAwesome6 name="house-chimney" size={24} color="white" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttonHeader} onPress={backToHome}>
+                                <AntDesign name="back" size={24} color="white" />
+                            </TouchableOpacity>
+                </View>
 
+                <View style={styles.contentContainer}>
                     <View style={styles.listButtonContainer}>
                         <FlatList
                             data={listFruits}
@@ -34,6 +45,7 @@ const ProductsList = () => {
                             )}
                         />
                     </View>
+
                 </View>
             </View>
         </SafeAreaView>
@@ -44,28 +56,23 @@ export default ProductsList
 
 const styles = StyleSheet.create({
     container:  {
-        flex: 1, 
-        justifyContent: "center",
-        alignItems: "center",
+        
     },
 
-    contentContainer :{
-        width: '80%', 
-        padding: 5,
-       
-    },
-
+    
     header: {
+        width: '100%',
         backgroundColor: '#003aa0',
         height: 90, 
         justifyContent: 'space-between',
-        flexDirection: 'row',
-        
-        
-        
+        flexDirection: 'row',     
         
     },
-
+    
+    contentContainer :{
+        padding: 5,
+        marginBottom: 10,
+    },
     buttonHeader:{
         padding: 20, 
         marginTop: 10,
@@ -75,12 +82,15 @@ const styles = StyleSheet.create({
     },
 
     listButtonContainer: {
-        padding: 12
-
+        marginTop: 20,
+        marginBottom: 50,
+        
     },
 
     flatlist: {
+
         marginTop: 20,
+        marginBottom: 50,
         paddingLeft: 20,
         paddingRight: 20
     },

@@ -28,7 +28,7 @@ const Home = () => {
             const response = await axios.get('http://makhom.sispro.com.br/ORC/WsObterDepositos.rule?sys=ORC&Login=ABIMAEL')
     
             const listResponse = response.data;
-            setListEstablishment([' a',...listResponse])
+            setListEstablishment(['',...listResponse])
             console.log(listResponse)
 
         }catch(error){
@@ -49,7 +49,7 @@ const Home = () => {
             if(listResponse && listResponse.msgError){
                 console.log("Erro de requisicao : A lista nao é iteravel")
             }else{
-                setListTypeBusiness([' ',...listResponse])
+                setListTypeBusiness(['',...listResponse])
             }
 
         }catch(error){
@@ -96,9 +96,6 @@ const Home = () => {
         setPassword('')
         router.back()
     }
-   
-    const listFruits = ['apple', 'banana', 'melon', 'pineapple', 'grape']
-
 
     return(
         <SafeAreaView style={{flex: 1}}>  

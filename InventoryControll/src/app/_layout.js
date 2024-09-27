@@ -16,6 +16,7 @@ const Layout = ()=> {
                 <Stack.Screen name="index" options={{title: "Login"}}/>
                 <Stack.Screen name="home/index" options={{title: "Home"}}/>
                 <Stack.Screen name="products/index" options={{title: "Products"}}/>
+                <Stack.Screen name="inventory/index" options={{title: "Inventory"}} />
             </Stack>
         </MyContext.Provider>
     )

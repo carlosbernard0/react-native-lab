@@ -17,7 +17,7 @@ const ProductsList = () => {
     const backToHome = () => {
         setSelectedEstablishment('')
         setIsShowSecondPicker(false)
-        router.back()
+        router.push('/home')
     }
 
 
@@ -39,7 +39,7 @@ const ProductsList = () => {
                             data={listFruits}
                             style={styles.flatlist}
                             renderItem={({item}) => (
-                                <TouchableOpacity style={styles.touchButton}>
+                                <TouchableOpacity style={styles.touchButton} onPress={() => router.push('/inventory')}>                                    
                                     <Text style={styles.textButton}>{item}</Text>
                                 </TouchableOpacity>
                             )}
@@ -69,16 +69,16 @@ const styles = StyleSheet.create({
         
     },
     
-    contentContainer :{
-        padding: 5,
-        marginBottom: 10,
-    },
     buttonHeader:{
         padding: 20, 
         marginTop: 10,
         marginLeft: 20,
         marginRight: 20
 
+    },
+    contentContainer :{
+        padding: 5,
+        marginBottom: 10,
     },
 
     listButtonContainer: {

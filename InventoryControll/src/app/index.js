@@ -31,15 +31,8 @@ const Login = () => {
     
     const makeLogin = async () => {
         try {
-            const response = await axios.post(url,dataJson);
-            // const response = await axios.post(url, {
-                //     "Login":"ABIMAEL",
-                //     "Senha":"12345"  
-                // });
-                
-                console.log(dataJson)
-                
-                console.log(response.data)
+            const response = await axios.post(url,dataJson);                             
+            console.log(response.data)
             
             const loginSuccess = response.data.LoginSuccess
             

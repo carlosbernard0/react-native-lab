@@ -5,21 +5,37 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { useContext, useEffect, useState } from "react";
 import MyContext from "../context/MyContext";
 import { useRouter } from "expo-router";
+import axios from "axios";
 
 
 const InventoryList = () => {
-    const {setSelectedEstablishment, setIsShowSecondPicker } = useContext(MyContext)
     const router = useRouter()
     const [isChecked, setIsChecked] = useState(false)
+    const [listInventory , setListInventory] = useState([])
+    const {setSelectedEstablishment, setIsShowSecondPicker,productSelected, login, typeBusinessNumber, company } = useContext(MyContext)
+    
+    const url = `http://makhom.sispro.com.br/ORC/WsDadosGrade.rule?sys=ORC&empresa=${company}&grupoNumero=${productSelected.CD_MAT_GRUPO}&servico=${typeBusinessNumber}&usuario=${login}`
 
+    const getListInventory = async() => {
+        console.log(url)
+        
+        try{
+            const response = await axios.get(url)
+            
+            const listResponse = response.data
+            console.log(listResponse)
+            setListInventory(listResponse)
+            
+        }catch(error){
+            console.log(error)
+        }
+    }
 
-    const data = [
-        { id: '1', col1: 'Alice', col2: 25, col3: 'A', col4: 'e'},
-        { id: '2', col1: 'Bob', col2: 30, col3: 'B', col4: 'f' },
-        { id: '3', col1: 'Charlie', col2: 35, col3: 'C', col4: 'g' },
-        { id: '4', col1: 'David', col2: 40, col3: 'A', col4: 'h' },
-        { id: '5', col1: 'Eve', col2: 28, col3: 'B', col4: 'i' },
-    ];
+    useEffect(()=>{
+        if(listInventory.length == 0){
+            getListInventory()
+        }
+    },[listInventory])
 
     const check = () =>{
         if(isChecked){
@@ -35,10 +51,6 @@ const InventoryList = () => {
         setIsShowSecondPicker(false)
         router.push('/home')
     }
-
-    useEffect(()=>{
-        console.log(data)
-    },[])
 
     return(
         <SafeAreaView style={{flex: 1}}>
@@ -69,28 +81,27 @@ const InventoryList = () => {
                             <Text style={styles.headerTableText}>Aplicação</Text>
                         </View>
                         <FlatList
-                            data={data}
-                            keyExtractor={(item => item.id)}
+                            data={listInventory}
+                            keyExtractor={(item => item.CD_ITEM_ID)}
                             renderItem={({item}) => (
                                 
                                 <View style={styles.row}>
                                     <TouchableOpacity style={styles.cell}>
-                                        <Text>{item.col1}</Text>
+                                        <Text>{item.CD_ITEM_ID}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.cell}>
-                                        <Text>{item.col2}</Text>
+                                        <Text>{item.DS_ITEM_ID}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.cell}>
-                                        <Text>{item.col3}</Text>
+                                        <Text>{item.CD_UNMED}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.cell}>
-                                        <Text>{item.col4}</Text>
+                                        <Text>{item.CD_APLICACAO}</Text>
                                     </TouchableOpacity>
                                 </View>
                             )}
                         />
                     </View>
-
                 </View>
             </View>
         </SafeAreaView>

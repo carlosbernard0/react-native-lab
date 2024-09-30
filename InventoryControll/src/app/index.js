@@ -17,6 +17,11 @@ const Login = () => {
     const [dataJson,setDataJson] = useState({"Login": `${login}`, "Senha": `${password}`})    
     const {setSelectedEstablishment} = useContext(MyContext)
     const {setIsShowSecondPicker} = useContext(MyContext)
+    const [errors, setErrors] = useState({
+        login: '', password: ''
+    })
+    const [activateErrorLogin, setActivateErrorLogin] = useState(false)
+    const [activateErrorPass, setActivateErrorPass] = useState(false)
 
     useEffect(()=>{
         if(login == ''){
@@ -30,6 +35,7 @@ const Login = () => {
     const url = 'http://makhom.sispro.com.br/ORC/WsLogin.rule?sys=ORC'
     
     const makeLogin = async () => {
+        searchErrors()
         try {
             const response = await axios.post(url,dataJson);                             
             console.log(response.data)
@@ -45,6 +51,26 @@ const Login = () => {
             console.error("error" ,error);
         }
     };
+
+    const searchErrors = () => {
+        if(login == ''){
+            setErrors(prevErrors => ({...prevErrors, login:'Preencha este campo para fazer login' }))
+            setActivateErrorLogin(true)
+        }else{
+            setActivateErrorLogin(false)
+            setErrors(prevErrors => ({...prevErrors, login:'' }))
+
+        }
+        if(password == ''){
+            setErrors(prevErrors => ({...prevErrors, password:'Preencha este campo para fazer login' }))
+            setActivateErrorPass(true)
+        }else{
+            setActivateErrorPass(false)
+            setErrors(prevErrors => ({...prevErrors, password:'' }))
+        }
+
+
+    }
     
     return(
         <SafeAreaView style={{flex: 1}}>
@@ -60,20 +86,22 @@ const Login = () => {
                     </Text>
                     <TextInput
                         value={login}
-                        style={styles.textInput}
+                        style={activateErrorLogin ? {...styles.textInput, borderColor: 'red'}: styles.textInput}
                         placeholder="Usuário"
                         onChangeText={(value) => setLogin(value)}
-                    />
+                        />
+                    <Text style={styles.error}>{errors.login}</Text>
                     <Text style={styles.text}>
                         Senha:
                     </Text>
                     <TextInput
                         value={password}
-                        style={styles.textInput}
+                        style={activateErrorPass ? {...styles.textInput, borderColor: 'red'}: styles.textInput}
                         placeholder='Senha'
                         onChangeText={(value) => setPassword(value)}
                         secureTextEntry={true}
                     />
+                    <Text style={styles.error}>{errors.password}</Text>
 
                     <TouchableOpacity style={styles.buttonAcess} onPress={makeLogin}>
                         <Text style={styles.textAcess}>Acessar</Text>
@@ -98,14 +126,12 @@ const Login = () => {
                         animationType="fade"
                     >
                         <ModalForgotPass setIsShowModal={setIsShowModalForgot}/>
-                        
                     </Modal>
                     <Modal
                         visible={isShowModalFirstAcess}
                         animationType="fade"
                     >
                         <ModalFirstAcess setIsShowModal={setIsShowModalFirstAcess}/>
-                        
                     </Modal>
 
                 </View>
@@ -172,6 +198,11 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: "100%",
     
+    },
+
+    error: {
+        color: 'red',
+        fontWeight: '600'
     },
 
     footer: {

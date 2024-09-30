@@ -9,9 +9,24 @@ const Layout = ()=> {
     const [selectedEstablishment , setSelectedEstablishment] = useState('')
     const [password, setPassword] = useState("")
     const [isShowSecondPicker, setIsShowSecondPicker] = useState(false)
+    const [productSelected, setProductSelected] = useState()
+    const [selectedTypeOfBusiness, setSelectedTypeOfBusiness] = useState('')
+    const [company, setCompany] = useState('')
+    const [typeBusinessNumber, setTypeBusinessNumber] = useState('')
+
 
     return(
-        <MyContext.Provider value={{login,setLogin, selectedEstablishment, setSelectedEstablishment, password, setPassword, isShowSecondPicker, setIsShowSecondPicker}}>
+        <MyContext.Provider value={{
+            login,setLogin, selectedEstablishment,
+            setSelectedEstablishment,
+            selectedTypeOfBusiness, setSelectedTypeOfBusiness,
+            password, setPassword,
+            isShowSecondPicker, setIsShowSecondPicker,
+            productSelected, setProductSelected,
+            company, setCompany,
+            typeBusinessNumber, setTypeBusinessNumber
+
+            }}>
             <Stack>
                 <Stack.Screen name="index" options={{title: "Login"}}/>
                 <Stack.Screen name="home/index" options={{title: "Home"}}/>

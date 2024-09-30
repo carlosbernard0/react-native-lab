@@ -11,12 +11,12 @@ import MyContext from '../context/MyContext';
 
 
 const Home = () => {
-    const {login, setLogin} = useContext(MyContext);
-    const {setPassword} = useContext(MyContext);
+    const {login, setLogin, setPassword, selectedEstablishment , setSelectedEstablishment
+        ,selectedTypeOfBusiness, setSelectedTypeOfBusiness
+        ,isShowSecondPicker, setIsShowSecondPicker,
+        setCompany, setTypeBusinessNumber, company, typeBusinessNumber
+    } = useContext(MyContext);
     const router = useRouter();
-    const {selectedEstablishment , setSelectedEstablishment} = useContext(MyContext)
-    const [selectedTypeOfBusiness, setSelectedTypeOfBusiness] = useState('')
-    const {isShowSecondPicker, setIsShowSecondPicker} = useContext(MyContext)
     const [listEstablishment, setListEstablishment] = useState([])
     const [listTypeBusiness, setListTypeBusiness] = useState([])
     const [cdEstab, setCdEstab] = useState('')
@@ -76,7 +76,6 @@ const Home = () => {
 
     const changeSelectedEstablishment = (item) => {
         setSelectedEstablishment(item)
-        console.log(listEstablishment)
         for (let i = 0; i < listEstablishment.length; i++) {
             if(listEstablishment[i].SC_ESTAB == item){
                 setCdEstab(listEstablishment[i].CD_ESTAB)
@@ -85,7 +84,16 @@ const Home = () => {
         }
                
     }
-
+    const changeSelectedTypeOfBusiness = (item) => {
+        setSelectedTypeOfBusiness(item)
+        for (let i = 0; i < listTypeBusiness.length; i++) {
+            if(listTypeBusiness[i].DS_NEGOC_TIPO == item){
+                setCompany(listTypeBusiness[i].CD_EMPRESA)
+                setTypeBusinessNumber(listTypeBusiness[i].CD_NEGOC_TIPO)
+            }                    
+        }
+                       
+    }
 
     const searchProduct = () => {
         router.push('/products')
@@ -130,7 +138,7 @@ const Home = () => {
                             <Text style={styles.text}>Tipo de negócio</Text>
                             <Picker
                                 selectedValue={selectedTypeOfBusiness}
-                                onValueChange={(itemValue) => setSelectedTypeOfBusiness(itemValue)}
+                                onValueChange={(itemValue) => changeSelectedTypeOfBusiness(itemValue)}
                                 style={styles.picker}
                             >
                                 {listTypeBusiness.map((item) => (

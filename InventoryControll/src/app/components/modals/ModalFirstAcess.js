@@ -1,11 +1,28 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity} from 'react-native'
 import MyContext from '../../context/MyContext'
 
 
 const ModalFirstAcess = ({setIsShowModal}) => {
-    const {setPassword, password, setLogin} = useContext(MyContext) 
+    
+    // const {setPassword, password, setLogin} = useContext(MyContext) 
+    const [data, setData] = useState({
+        name: '', mail: '', password:'', passwordConfirm: ''
+    })
 
+    const handleChange = (field,value) => {
+        setData(prevData => ({...prevData,[field]: value}))
+    }
+
+    const save = () => {
+        if(data.passwordConfirm != data.password){
+            alert('As senhas devem se coincidirem!')
+        }
+
+        if(data.name == '' || data.mail == '' || data.password == '' || data.passwordConfirm == '' ) console.log('Você deve preencher todos os campos!')
+
+        console.log(data)
+    }
 
     return(
         <View style={styles.container}>
@@ -14,6 +31,8 @@ const ModalFirstAcess = ({setIsShowModal}) => {
                         Nome:
                 </Text>
                 <TextInput
+                    value={data.name}
+                    onChangeText={(value) => handleChange('name', value)}
                     style={styles.textInput}
                 
                 />
@@ -21,6 +40,8 @@ const ModalFirstAcess = ({setIsShowModal}) => {
                         Email:
                 </Text>
                 <TextInput
+                    value={data.mail}
+                    onChangeText={(value) => handleChange('mail',value)}
                     style={styles.textInput}
                     placeholder='Email para recuperação de senha'
                 />
@@ -30,6 +51,8 @@ const ModalFirstAcess = ({setIsShowModal}) => {
                         Senha:
                 </Text>
                 <TextInput
+                    value={data.password}
+                    onChangeText={(value)=> handleChange('password',value)}
                     style={styles.textInput}
                     secureTextEntry={true}
 
@@ -38,11 +61,13 @@ const ModalFirstAcess = ({setIsShowModal}) => {
                         Confirme a sua senha:
                 </Text>
                 <TextInput
+                    value={data.passwordConfirm}
+                    onChangeText={(value)=> handleChange('passwordConfirm', value)}
                     style={styles.textInput}
                     secureTextEntry={true}
 
                 />
-                <TouchableOpacity style={styles.buttonSave} >
+                <TouchableOpacity style={styles.buttonSave} onPress={save} >
                             <Text style={styles.textSave}>Salvar</Text>
                 </TouchableOpacity>
 

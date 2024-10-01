@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Pressable, Button, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, Pressable, TouchableOpacity } from "react-native";
 import { useState } from "react";
 
 const PasswordItem = ({data, removePassword}) => {

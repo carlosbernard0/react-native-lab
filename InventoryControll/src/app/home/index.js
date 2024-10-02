@@ -95,8 +95,8 @@ const Home = () => {
                        
     }
 
-    const searchProduct = () => {
-        router.push('/products')
+    const searchGroup = () => {
+        router.push('/groups')
     }
 
     const logout = () => {
@@ -146,7 +146,7 @@ const Home = () => {
                                 ))}
                             </Picker>
 
-                            <TouchableOpacity style={styles.buttonProduct} onPress={searchProduct}>
+                            <TouchableOpacity style={styles.buttonProduct} onPress={searchGroup}>
                                 <Text style={styles.textButton}>Produto</Text>
                             </TouchableOpacity>
 

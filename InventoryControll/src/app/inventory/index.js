@@ -12,9 +12,9 @@ const InventoryList = () => {
     const router = useRouter()
     const [isChecked, setIsChecked] = useState(false)
     const [listInventory , setListInventory] = useState([])
-    const {setSelectedEstablishment, setIsShowSecondPicker,productSelected, login, typeBusinessNumber, company } = useContext(MyContext)
+    const {setSelectedEstablishment, setIsShowSecondPicker,groupSelected, login, typeBusinessNumber, company } = useContext(MyContext)
     
-    const url = `http://makhom.sispro.com.br/ORC/WsDadosGrade.rule?sys=ORC&empresa=${company}&grupoNumero=${productSelected.CD_MAT_GRUPO}&servico=${typeBusinessNumber}&usuario=${login}`
+    const url = `http://makhom.sispro.com.br/ORC/WsDadosGrade.rule?sys=ORC&empresa=${company}&grupoNumero=${groupSelected.CD_MAT_GRUPO}&servico=${typeBusinessNumber}&usuario=${login}`
 
     const getListInventory = async() => {
         console.log(url)

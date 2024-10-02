@@ -9,7 +9,7 @@ const Layout = ()=> {
     const [selectedEstablishment , setSelectedEstablishment] = useState('')
     const [password, setPassword] = useState("")
     const [isShowSecondPicker, setIsShowSecondPicker] = useState(false)
-    const [productSelected, setProductSelected] = useState()
+    const [groupSelected, setGroupSelected] = useState()
     const [selectedTypeOfBusiness, setSelectedTypeOfBusiness] = useState('')
     const [company, setCompany] = useState('')
     const [typeBusinessNumber, setTypeBusinessNumber] = useState('')
@@ -22,7 +22,7 @@ const Layout = ()=> {
             selectedTypeOfBusiness, setSelectedTypeOfBusiness,
             password, setPassword,
             isShowSecondPicker, setIsShowSecondPicker,
-            productSelected, setProductSelected,
+            groupSelected, setGroupSelected,
             company, setCompany,
             typeBusinessNumber, setTypeBusinessNumber
 
@@ -30,8 +30,9 @@ const Layout = ()=> {
             <Stack>
                 <Stack.Screen name="index" options={{title: "Login"}}/>
                 <Stack.Screen name="home/index" options={{title: "Home"}}/>
-                <Stack.Screen name="products/index" options={{title: "Products"}}/>
+                <Stack.Screen name="groups/index" options={{title: "Groups"}}/>
                 <Stack.Screen name="inventory/index" options={{title: "Inventory"}} />
+                <Stack.Screen name="product/index" options={{title: "Products"}} />
             </Stack>
         </MyContext.Provider>
     )

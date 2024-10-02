@@ -74,6 +74,8 @@ const Login = () => {
     
     return(
         <SafeAreaView style={{flex: 1}}>
+            <Text onPress={() => router.push('/product')}>product</Text>
+
             <View style={styles.container}>
                 <View style={styles.contentContainer}>
                     <Image

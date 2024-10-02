@@ -8,27 +8,27 @@ import MyContext from "../context/MyContext";
 import axios from "axios";
 
 
-const ProductsList = () => {
+const GroupsList = () => {
     const router = useRouter()
-    const {setSelectedEstablishment,setIsShowSecondPicker, setProductSelected} = useContext(MyContext)
-    const [ listProducts, setListProducts] = useState([])
+    const {setSelectedEstablishment,setIsShowSecondPicker, setGroupSelected} = useContext(MyContext)
+    const [ listGroups, setListGroups] = useState([])
 
-    const getListProducts = async() => {
+    const getListGroups = async() => {
         try{
             const response = await axios.get('http://makhom.sispro.com.br/ORC/WsGrupos.rule?sys=ORC')
 
             const listResponse = response.data;
             console.log(listResponse)
 
-            setListProducts(listResponse)
+            setListGroups(listResponse)
         }catch(error){
             console.log(error)
         }
     }
 
-    const selectProduct = (itemValue) => {
+    const selectGroup = (itemValue) => {
         console.log(itemValue)
-        setProductSelected(itemValue)
+        setGroupSelected(itemValue)
         router.push('/inventory')
     }
     const backToHome = () => {
@@ -38,11 +38,11 @@ const ProductsList = () => {
     }
 
     useEffect(()=>{
-        if(listProducts.length == 0) {
-            getListProducts()
+        if(listGroups.length == 0) {
+            getListGroups()
         }
 
-    },[])
+    },[listGroups])
 
 
 
@@ -61,11 +61,11 @@ const ProductsList = () => {
                 <View style={styles.contentContainer}>
                     <View style={styles.listButtonContainer}>
                         <FlatList
-                            data={listProducts}
+                            data={listGroups}
                             style={styles.flatlist}
                             renderItem={({item}) => (
                                 <TouchableOpacity style={styles.touchButton}
-                                onPress={()=>selectProduct(item)}>                             
+                                onPress={()=>selectGroup(item)}>                             
                                     <Text style={styles.textButton}>{item.DS_MAT_GRUPO}</Text>
                                 </TouchableOpacity>
                             )}
@@ -78,7 +78,7 @@ const ProductsList = () => {
     )
 }
 
-export default ProductsList
+export default GroupsList
 
 const styles = StyleSheet.create({
     container:  {

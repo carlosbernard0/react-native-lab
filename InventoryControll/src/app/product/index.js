@@ -12,13 +12,12 @@ const Product = () => {
     const router = useRouter()
     const { setSelectedEstablishment, setIsShowSecondPicker } = useContext(MyContext)
     const [ countItem, setCountItem ] = useState(1)
-    const [ listTypeValues, setListTypeValues] = useState([
-        'Preço de Venda a Vista', 'Preço de Venda a Prazo'
-    ])
+    const [ listTypeValues, setListTypeValues] = useState([])
     const [typeValueSelected, setTypeValueSelected] = useState(listTypeValues[0])
     const [cashPriceItem, setCashPriceItem] = useState(300)
     const [creditPriceItem, setCreditPriceItem] = useState(400)
     const [allValueItem, setAllValueItem] = useState((cashPriceItem*countItem)+',0000')
+    const [ availableCount, setAvailableCount] = useState(0)
 
     const backToHome = () => {
         setSelectedEstablishment('')
@@ -37,6 +36,11 @@ const Product = () => {
 
     useEffect(()=>{
         setAllValueItem(cashPriceItem * countItem )
+        setListTypeValues([
+            `${cashPriceItem} Preço de Venda a Vista`, `${creditPriceItem} Preço de Venda a Prazo`
+        ])
+
+        
 
     },[countItem])
 
@@ -58,14 +62,14 @@ const Product = () => {
                     </View>
                     <View style={styles.contentRow}>
                         <Text>Disponivel</Text>
-                        <Text>0</Text>
+                        <Text>{availableCount}</Text>
                     </View>
                     <TouchableOpacity style={styles.buttonMoreEstablishment}>
                         <Text style={styles.textButton}>Demais estabelecimentos</Text>
                     </TouchableOpacity>
                     <View style={styles.contentRow}>
                         <Text style={styles.textBold}>Valor Unitário R$</Text>
-                        <Text>{cashPriceItem}</Text>
+                        <Text>{typeValueSelected == listTypeValues[0] ? cashPriceItem : creditPriceItem}</Text>
                     </View>
                     <View style={styles.contentRow}>
                         <Text style={styles.textBold}>Quantidade</Text>
@@ -81,7 +85,6 @@ const Product = () => {
                         </View>
                     </View>
                     <View style={styles.contentRow}>
-                        {/* TWO CHECKOBOX */}
                         <Picker
                             selectedValue={typeValueSelected}
                             onValueChange={(value) => setTypeValueSelected(value)}
@@ -132,14 +135,16 @@ const styles = StyleSheet.create({
 
     },
     contentContainer :{
-        marginTop: 10,
-        marginBottom: 10,
-        padding: 10,
-        width: '70%'
+        marginLeft: 50,
+        marginRight: 50,
+        padding: 20,
+        width: '100%'
     },
 
     contentInfoItem: {
         marginBottom: 30,
+        marginLeft: 20,
+        marginRight: 20,
         gap: 8,
     },
 
@@ -152,12 +157,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 10,
+        marginLeft: 20,
+        marginRight: 20
     },
     buttonMoreEstablishment:{
         backgroundColor: '#003aa0',
         borderRadius: 8,
         marginBottom: 15, 
         marginTop: 15, 
+        marginLeft: 15, 
+        marginRight: 15, 
     },
 
     textButton:{
@@ -186,7 +195,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap : 10,
         backgroundColor: '#b8daed',
-        borderRadius: 5
+        borderRadius: 5,
+        marginLeft: 15,
+        marginRight: 15,
     }
 
 })

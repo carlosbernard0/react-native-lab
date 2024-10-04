@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context"
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity,FlatList, Switch} from 'react-native';
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity,FlatList, Switch, TextInput} from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useContext, useEffect, useState } from "react";
@@ -73,6 +73,14 @@ const InventoryList = () => {
                         <Text>Somente produtos em estoque</Text>
                     </View>
 
+
+                    <View style={styles.searchContainer}>
+                        <TextInput
+                            placeholder='Pesquise por nome do Produto'
+                            style={styles.textSearch}
+                        />
+                    </View>
+
                     <View style={styles.tableContent}>
                         <View style={styles.headerTableContainer}>
                             <Text style={styles.headerTableText}>Código</Text>
@@ -140,6 +148,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 5,
         marginBottom: 10
+    },
+
+    searchContainer:{
+        marginBottom: 20,
+        marginTop: 10
+    },
+
+    textSearch: {
+        borderColor: '#000',
+        padding: 10,
+        borderWidth: .8
     },
 
     tableContent: {

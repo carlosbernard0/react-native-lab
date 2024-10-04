@@ -94,7 +94,7 @@ const Product = () => {
                                 <Picker.Item  key={item} label={item} value={item}/>
                             )): 
                             
-                            (<Text>Nao possui dados na lista de valores</Text>)}
+                            (<Picker.Item>Nao possui dados na lista de valores</Picker.Item>)}
                         </Picker>
                     </View>
                     <View style={styles.allValue}>

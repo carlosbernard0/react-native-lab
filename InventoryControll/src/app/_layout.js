@@ -1,32 +1,13 @@
 import { Stack } from "expo-router";
-import MyContext from "./context/MyContext";
-import { useState } from "react";
+import { MyContextProvider } from "./context/MyContext";
 
 
 
 const Layout = ()=> {
-    const [login, setLogin] = useState('')
-    const [selectedEstablishment , setSelectedEstablishment] = useState('')
-    const [password, setPassword] = useState("")
-    const [isShowSecondPicker, setIsShowSecondPicker] = useState(false)
-    const [groupSelected, setGroupSelected] = useState()
-    const [selectedTypeOfBusiness, setSelectedTypeOfBusiness] = useState('')
-    const [company, setCompany] = useState('')
-    const [typeBusinessNumber, setTypeBusinessNumber] = useState('')
 
 
     return(
-        <MyContext.Provider value={{
-            login,setLogin, selectedEstablishment,
-            setSelectedEstablishment,
-            selectedTypeOfBusiness, setSelectedTypeOfBusiness,
-            password, setPassword,
-            isShowSecondPicker, setIsShowSecondPicker,
-            groupSelected, setGroupSelected,
-            company, setCompany,
-            typeBusinessNumber, setTypeBusinessNumber
-
-            }}>
+        <MyContextProvider>
             <Stack>
                 <Stack.Screen name="index" options={{title: "Login"}}/>
                 <Stack.Screen name="home/index" options={{title: "Home"}}/>
@@ -35,7 +16,7 @@ const Layout = ()=> {
                 <Stack.Screen name="product/index" options={{title: "Products"}} />
                 <Stack.Screen name="establishment/index" options={{title: "Establishments"}} />
             </Stack>
-        </MyContext.Provider>
+        </MyContextProvider>
     )
 }
 

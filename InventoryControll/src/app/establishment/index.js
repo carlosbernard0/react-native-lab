@@ -32,21 +32,33 @@ const Establishment = () => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.contentContainer}>
-                    <Text style={styles.textBalanceDeposit}>CONSULTA SALDO POR DEPÓSITO</Text>
-                    <View style={styles.row}>
-                                    <Text style={{...styles.itemList, fontWeight: '800'}}>Depósito</Text>
-                                    <Text style={{...styles.itemList, fontWeight: '800'}}>Quantidade</Text>
-                            </View>
-                    <FlatList
-                        data={listData}
-                        keyExtractor={(item => item)}
-                        renderItem={({item}) => (
-                            <View style={styles.row}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.textBalanceDeposit}>CONSULTA SALDO POR DEPÓSITO</Text>
+                    </View>
+
+                    <View style={styles.productInfoContainer}>
+                        <Text style={styles.productDescTitle}>Descrição: </Text>
+                        <Text style={styles.productCodTitle}>COD: </Text>
+                    </View>
+
+                    
+                    <View style={styles.list}>
+                        <View style={styles.row}>
+                            <Text style={{...styles.itemList, fontWeight: '800'}}>Depósito</Text>
+                            <Text style={{...styles.itemList, fontWeight: '800'}}>Quantidade</Text>
+                        </View>
+                        <FlatList
+                            data={listData}
+                            keyExtractor={(item => item)}
+                            renderItem={({item}) => (
+                                <View style={styles.row}>
                                     <Text style={styles.itemList}>{item.descricao}</Text>
                                     <Text style={styles.itemList}>{item.quantidade}</Text>
-                            </View>
-                        )}
-                    />
+                                </View>
+                            )}
+                        />
+                    </View>
+
                 </View>
             </View>
         </SafeAreaView>
@@ -83,12 +95,41 @@ const styles = StyleSheet.create({
         width: '100%'
     },
 
+    titleContainer:{ 
+        marginBottom: 20,
+        marginTop: 10,
+        backgroundColor: 'lightblue'
+
+    },
+
+    productInfoContainer: {
+        width: '60%',
+        marginLeft: 20, 
+        flexDirection: "row",
+        justifyContent: 'space-around'
+    },
+
+    productCodTitle: {
+        fontSize: 20,
+        fontWeight: '600'
+    },
+
+    productDescTitle: {
+        fontSize: 20,
+        fontWeight: '600'
+    },
+
+    list: {
+        padding: 30,
+    },
+
+
     textBalanceDeposit: {
         color: '#000',
         textAlign: "center",
         fontWeight: '700',
         fontSize: 20,
-        marginBottom: 20
+        padding: 15
     },
 
     row: {

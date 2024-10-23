@@ -6,18 +6,40 @@ import { useRouter } from "expo-router";
 import { useContext, useEffect, useState} from "react";
 import MyContext from "../context/MyContext";
 import { Picker} from '@react-native-picker/picker';
+import axios from "axios";
 
 
 const Product = () => {
     const router = useRouter()
-    const { setSelectedEstablishment, setIsShowSecondPicker } = useContext(MyContext)
+    const { setSelectedEstablishment, setIsShowSecondPicker, productSelected, company, token, selectedEstablishment,selectedTypeOfBusiness} = useContext(MyContext)
     const [ countItem, setCountItem ] = useState(1)
     const [ listTypeValues, setListTypeValues] = useState([])
-    const [typeValueSelected, setTypeValueSelected] = useState(listTypeValues[0])
-    const [cashPriceItem, setCashPriceItem] = useState(300)
-    const [creditPriceItem, setCreditPriceItem] = useState(400)
-    const [allValueItem, setAllValueItem] = useState((cashPriceItem*countItem)+',0000')
+    const [ typeValueSelected, setTypeValueSelected] = useState(listTypeValues[0])
+    const [ listInfosProducts, setListInfoProducts] = useState([])
+    const [ priceItem, setPriceItem] = useState()
+    const [ allValueItem, setAllValueItem] = useState("R$"+(priceItem*countItem)+',00')
     const [ availableCount, setAvailableCount] = useState(0)
+
+    const urlProduct = `https://siscandes2v6.sispro.com.br/SisproERPCloud/Service_Private/React/SpReact2JapuraWS/api/Produto/Get?empresa=${company}&estab=${selectedEstablishment.CD_ESTAB}&tipoNegoc=${selectedTypeOfBusiness.CD_NEGOC_TIPO}&idItem=${productSelected.CD_ITEM_ID}`
+
+    const getProduct = async () => {
+
+        try{
+            const response = await axios.get(urlProduct, {
+                headers: {
+                    Authorization: token
+                }
+            })
+
+            setListInfoProducts(response.data.ProdutoList);
+            setPriceItem(listInfosProducts[0].VL_LISPCO_ITEM)
+
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+
 
     const backToHome = () => {
         setSelectedEstablishment('')
@@ -34,18 +56,32 @@ const Product = () => {
         setCountItem(countItem + 1)
     }
 
+    const handleChangeTypeValues = (value) => {
+        setTypeValueSelected(value)
+        const cashPriceSplit = value.split(' ');
+        setPriceItem(cashPriceSplit[0]);
+    }
+
     useEffect(()=>{
-        setAllValueItem(cashPriceItem * countItem )
-        setListTypeValues([
-            `${cashPriceItem} Preço de Venda a Vista`, `${creditPriceItem} Preço de Venda a Prazo`
-        ])
+        if(listInfosProducts.length == 0){
+            getProduct()
+        }else{
+            setListTypeValues(
+                listInfosProducts.map((item) => 
+                    `R$${item.VL_LISPCO_ITEM},00 ${item.DS_PRECO}`
+                )
+            )
+            setPriceItem("R$"+listInfosProducts[0].VL_LISPCO_ITEM+",00")
+        }
 
-        
 
-    },[countItem])
+        setAllValueItem(priceItem * countItem )
+
+    },[countItem,listInfosProducts])
 
     return(
         <SafeAreaView style={{flex: 1}}>
+            <Text onPress={getProduct}>GET PRODUCT </Text>
             <View style={styles.container}>
                 <View style={styles.header}>
                 <TouchableOpacity style={styles.buttonHeader} onPress={backToHome} >
@@ -57,8 +93,8 @@ const Product = () => {
                 </View>
                 <View style={styles.contentContainer}>
                     <View style={styles.contentInfoItem}>
-                        <Text style={styles.textBold}>00007</Text> 
-                        <Text style={styles.nameItem}>pneu</Text>
+                        <Text style={styles.textBold}>{productSelected.CD_ITEM_ID}</Text> 
+                        <Text style={styles.nameItem}>{productSelected.DS_ITEM_ID}</Text>
                     </View>
                     <View style={styles.contentRow}>
                         <Text>Disponivel</Text>
@@ -68,8 +104,8 @@ const Product = () => {
                         <Text style={styles.textButton}>Demais estabelecimentos</Text>
                     </TouchableOpacity>
                     <View style={styles.contentRow}>
-                        <Text style={styles.textBold}>Valor Unitário R$</Text>
-                        <Text>{typeValueSelected == listTypeValues[0] ? cashPriceItem : creditPriceItem}</Text>
+                        <Text style={styles.textBold}>Valor Unitário</Text>
+                        <Text>{priceItem}</Text>
                     </View>
                     <View style={styles.contentRow}>
                         <Text style={styles.textBold}>Quantidade</Text>
@@ -87,18 +123,20 @@ const Product = () => {
                     <View style={styles.contentRow}>
                         <Picker
                             selectedValue={typeValueSelected}
-                            onValueChange={(value) => setTypeValueSelected(value)}
+                            // onValueChange={(value) => setTypeValueSelected(value)}
+                            onValueChange={(value) => handleChangeTypeValues(value)}
                             style={styles.picker}
                         >
                             {listTypeValues.length != 0 ? listTypeValues.map((item) => (
                                 <Picker.Item  key={item} label={item} value={item}/>
-                            )): 
-                            
-                            (<Picker.Item>Nao possui dados na lista de valores</Picker.Item>)}
+                                )
+                            ):(
+                                <Picker.Item>Nao possui dados na lista de valores</Picker.Item>
+                            )}
                         </Picker>
                     </View>
                     <View style={styles.allValue}>
-                        <Text style={{padding: 10}}>Valor Total Item R$</Text>
+                        <Text style={{padding: 10}}>Valor Total Item</Text>
                         <Text style={{...styles.textBold, letterSpacing: 1}}>{allValueItem}</Text>
                     </View>
                 </View>

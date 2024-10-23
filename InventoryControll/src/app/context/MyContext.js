@@ -13,18 +13,22 @@ export const MyContextProvider = ({children}) => {
     const [selectedTypeOfBusiness, setSelectedTypeOfBusiness] = useState('')
     const [company, setCompany] = useState('')
     const [typeBusinessNumber, setTypeBusinessNumber] = useState('')
+    const [token, setToken] = useState('');
+    const [productSelected, setProductSelected] = useState('')
     
 
     return(
         <MyContext.Provider value={{
-            login,setLogin, selectedEstablishment,
-            setSelectedEstablishment,
+            login,setLogin,
+            selectedEstablishment,setSelectedEstablishment,
             selectedTypeOfBusiness, setSelectedTypeOfBusiness,
             password, setPassword,
             isShowSecondPicker, setIsShowSecondPicker,
             groupSelected, setGroupSelected,
             company, setCompany,
-            typeBusinessNumber, setTypeBusinessNumber
+            typeBusinessNumber, setTypeBusinessNumber,
+            token, setToken,
+            productSelected, setProductSelected
         }}>
             {children}
         </MyContext.Provider>

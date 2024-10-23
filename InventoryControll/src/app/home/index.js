@@ -8,26 +8,34 @@ import axios from 'axios'
 import MyContext from '../context/MyContext';
 
 
-
-
 const Home = () => {
     const {login, setLogin, setPassword, selectedEstablishment , setSelectedEstablishment
-        ,selectedTypeOfBusiness, setSelectedTypeOfBusiness
+        ,   selectedTypeOfBusiness, setSelectedTypeOfBusiness
         ,isShowSecondPicker, setIsShowSecondPicker,
-        setCompany, setTypeBusinessNumber, company, typeBusinessNumber
+        setCompany, setTypeBusinessNumber, company, typeBusinessNumber,token
     } = useContext(MyContext);
     const router = useRouter();
     const [listEstablishment, setListEstablishment] = useState([])
     const [listTypeBusiness, setListTypeBusiness] = useState([])
-    const [cdEstab, setCdEstab] = useState('')
 
+    const urlEstablishment = `https://siscandes2v6.sispro.com.br/SisproERPCloud/Service_Private/React/SpReact2JapuraWS/api/Get/GetEstabelecimento` 
 
+    // const urlTypeOfBusiness = `https://siscandes2v6.sispro.com.br/SisproERPCloud/Service_Private/React/SpReact2JapuraWS/api/Get/GetEstabelecimento`
+    const urlTypeOfBusiness = `https://siscandes2v6.sispro.com.br/SisproERPCloud/Service_Private/React/SpReact2JapuraWS/api/depositos/tiponegocio?Usuario=${login}&CDEstab=${selectedEstablishment.CD_ESTAB}`
 
     const getListEstablishment = async () => {
         try{
-            const response = await axios.get('http://makhom.sispro.com.br/ORC/WsObterDepositos.rule?sys=ORC&Login=ABIMAEL')
+            const response = await axios.get(urlEstablishment, {
+                headers: {
+                    Authorization: token
+                },
+                params: {
+                    user: login
+                }
+            });
     
-            const listResponse = response.data;
+            console.log(response)
+            const listResponse = response.data.EstabelecimentoList;
             setListEstablishment(['',...listResponse])
             console.log(listResponse)
 
@@ -39,12 +47,15 @@ const Home = () => {
     }
 
     const getListTypeBusiness = async() => {
-
         try{
-            const response = await axios.get(`http://makhom.sispro.com.br/ORC/WsTipoNegocio.rule?sys=ORC&Usuario=${login}&CDEstab=${cdEstab}`)
-            // const response = await axios.get(`http://makhom.sispro.com.br/ORC/WsTipoNegocio.rule?sys=ORC&Usuario=ABIMAEL&CDEstab=${cdEstab}`)
-    
-            const listResponse = response.data;
+            const response = await axios.get(urlTypeOfBusiness,{
+                headers: {
+                    Authorization: token
+                }
+            });
+            
+            
+            const listResponse = response.data.TipoNegocioList;
             console.log(listResponse);
             if(listResponse && listResponse.msgError){
                 console.log("Erro de requisicao : A lista nao é iteravel")
@@ -75,21 +86,18 @@ const Home = () => {
     },[selectedEstablishment])
 
     const changeSelectedEstablishment = (item) => {
-        setSelectedEstablishment(item)
         for (let i = 0; i < listEstablishment.length; i++) {
             if(listEstablishment[i].SC_ESTAB == item){
-                setCdEstab(listEstablishment[i].CD_ESTAB)
+                setSelectedEstablishment(listEstablishment[i])
             }
-                            
         }
-               
     }
     const changeSelectedTypeOfBusiness = (item) => {
-        setSelectedTypeOfBusiness(item)
         for (let i = 0; i < listTypeBusiness.length; i++) {
             if(listTypeBusiness[i].DS_NEGOC_TIPO == item){
                 setCompany(listTypeBusiness[i].CD_EMPRESA)
                 setTypeBusinessNumber(listTypeBusiness[i].CD_NEGOC_TIPO)
+                setSelectedTypeOfBusiness(listTypeBusiness[i])
             }                    
         }
                        
@@ -107,6 +115,7 @@ const Home = () => {
 
     return(
         <SafeAreaView style={{flex: 1}}>  
+            <Text onPress={getListTypeBusiness}>MAKE A TEST WITH TYPEOFBUSINESS</Text>
             <View style={ styles.container}>
                 <View style={styles.header}>
                         <Text style={ styles.textHeader}>.</Text>
@@ -117,7 +126,7 @@ const Home = () => {
                         <View style={styles.firstViewPicker}>
                             <Text style={styles.text}>Estabelecimento</Text>
                             <Picker
-                                selectedValue={selectedEstablishment}
+                                selectedValue={selectedEstablishment.SC_ESTAB}
                                 onValueChange={(itemValue) => changeSelectedEstablishment(itemValue)}
                                 style={styles.picker}
                             >
@@ -129,7 +138,7 @@ const Home = () => {
                         </View>
                     ):(
                         <View style={styles.firstViewPicker}>
-                            <Text style={ styles.textBold}>{selectedEstablishment}</Text>
+                            <Text style={ styles.textBold}>{selectedEstablishment.SC_ESTAB}</Text>
                         </View>
                     )}
 
@@ -137,7 +146,7 @@ const Home = () => {
                         <View style={styles.firstViewPicker}>
                             <Text style={styles.text}>Tipo de negócio</Text>
                             <Picker
-                                selectedValue={selectedTypeOfBusiness}
+                                selectedValue={selectedTypeOfBusiness.DS_NEGOC_TIPO}
                                 onValueChange={(itemValue) => changeSelectedTypeOfBusiness(itemValue)}
                                 style={styles.picker}
                             >

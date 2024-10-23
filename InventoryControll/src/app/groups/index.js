@@ -10,14 +10,20 @@ import axios from "axios";
 
 const GroupsList = () => {
     const router = useRouter()
-    const {setSelectedEstablishment,setIsShowSecondPicker, setGroupSelected} = useContext(MyContext)
+    const {setSelectedEstablishment,setIsShowSecondPicker, token, setGroupSelected} = useContext(MyContext)
     const [ listGroups, setListGroups] = useState([])
 
+    const urlGroups = `https://siscandes2v6.sispro.com.br/SisproERPCloud/Service_Private/React/SpReact2JapuraWS/api/Get/GetGrupos`
+    
     const getListGroups = async() => {
         try{
-            const response = await axios.get('http://makhom.sispro.com.br/ORC/WsGrupos.rule?sys=ORC')
+            const response = await axios.get(urlGroups,{
+                headers: {
+                    Authorization: token
+                }
+            })
 
-            const listResponse = response.data;
+            const listResponse = response.data.GrupoList;
             console.log(listResponse)
 
             setListGroups(listResponse)

@@ -14,7 +14,7 @@ const Login = () => {
     const {password, setPassword} = useContext(MyContext)
     const [isShowModalForgot , setIsShowModalForgot] = useState(false)
     const [isShowModalFirstAcess , setIsShowModalFirstAcess] = useState(false)
-    const [dataJson,setDataJson] = useState({"Login": `${login}`, "Senha": `${password}`})    
+    const [dataJson,setDataJson] = useState({"usuario": `${login}`, "senha": `${password}`})    
     const {setSelectedEstablishment} = useContext(MyContext)
     const {setIsShowSecondPicker} = useContext(MyContext)
     const [errors, setErrors] = useState({
@@ -22,27 +22,34 @@ const Login = () => {
     })
     const [activateErrorLogin, setActivateErrorLogin] = useState(false)
     const [activateErrorPass, setActivateErrorPass] = useState(false)
+    const {setToken} = useContext(MyContext);
 
     useEffect(()=>{
         if(login == ''){
             setIsShowSecondPicker(false)
             setSelectedEstablishment('')
         }
-        setDataJson({"Login": `${login.toUpperCase()}`, "Senha": `${password}`})
+        setDataJson({"usuario": `${login.toUpperCase()}`, "senha": `${password}`})
 
     },[password,login])
 
-    const url = 'http://makhom.sispro.com.br/ORC/WsLogin.rule?sys=ORC'
+    const url = 'https://siscandes2v6.sispro.com.br/SisproERPCloud/Service_Private/React/SpReact2AuthWS/api/Auth/Login'
     
     const makeLogin = async () => {
         searchErrors()
         try {
-            const response = await axios.post(url,dataJson);                             
-            console.log(response.data)
+            const response = await axios.post(url, dataJson, {
+                params: {
+                  dominio: 'REACT_JAPURA'
+                }}
+            );
+            console.log(response.data.Token)
             
-            const loginSuccess = response.data.LoginSuccess
             
-            if(loginSuccess == 'true') {
+            const Error = response.data.Error //boolean
+            
+            if(!Error) {
+                setToken(response.data.Token)
                 router.push('/home')
             }else{
                 alert('Acesso negado! Usuário ou senha não conferem. Entre em contato com o administrador.')
@@ -120,7 +127,7 @@ const Login = () => {
                     
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>
-                        Desenvolvido por SISPRO S/A Serviços e Tecnologia da Informação ©2023 Todos os direitos reservados
+                            Desenvolvido por SISPRO S/A Serviços e Tecnologia da Informação ©2023 Todos os direitos reservados
                         </Text>
                     </View>
 

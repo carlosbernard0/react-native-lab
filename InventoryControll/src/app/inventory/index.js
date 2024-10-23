@@ -12,17 +12,19 @@ const InventoryList = () => {
     const router = useRouter()
     const [isChecked, setIsChecked] = useState(false)
     const [listInventory , setListInventory] = useState([])
-    const {setSelectedEstablishment, setIsShowSecondPicker,groupSelected, login, typeBusinessNumber, company } = useContext(MyContext)
+    const {setSelectedEstablishment, setIsShowSecondPicker, setProductSelected, login, typeBusinessNumber,token } = useContext(MyContext)
     
-    const url = `http://makhom.sispro.com.br/ORC/WsDadosGrade.rule?sys=ORC&empresa=${company}&grupoNumero=${groupSelected.CD_MAT_GRUPO}&servico=${typeBusinessNumber}&usuario=${login}`
-
+    const urlInventory = `https://siscandes2v6.sispro.com.br/SisproERPCloud/Service_Private/React/SpReact2JapuraWS/api/depositos/getinventario?Usuario=${login}&TipoNegocio=${typeBusinessNumber}`
     const getListInventory = async() => {
-        console.log(url)
         
         try{
-            const response = await axios.get(url)
+            const response = await axios.get(urlInventory,{
+                headers: {
+                    Authorization: token
+                }
+            })
             
-            const listResponse = response.data
+            const listResponse = response.data.GetInventarioList
             console.log(listResponse)
             setListInventory(listResponse)
             
@@ -42,6 +44,16 @@ const InventoryList = () => {
             setIsChecked(false)
         }else{
             setIsChecked(true)
+        }
+    }
+
+    const selectProduct = (item) => {
+        if(item != null){
+            console.log(item)
+            setProductSelected(item)
+            router.push('/product')
+        }else{
+            alert('item is null!')
         }
     }
     
@@ -76,7 +88,7 @@ const InventoryList = () => {
 
                     <View style={styles.searchContainer}>
                         <TextInput
-                            placeholder='Pesquise por nome do Produto'
+                            placeholder='Pesquise por Nome ou Código do Produto'
                             style={styles.textSearch}
                         />
                     </View>
@@ -94,16 +106,16 @@ const InventoryList = () => {
                             renderItem={({item}) => (
                                 
                                 <View style={styles.row}>
-                                    <TouchableOpacity style={styles.cell}>
+                                    <TouchableOpacity style={styles.cell} onPress={() => selectProduct(item)}>
                                         <Text>{item.CD_ITEM_ID}</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.cell}>
+                                    <TouchableOpacity style={styles.cell} onPress={() => selectProduct(item)}>
                                         <Text>{item.DS_ITEM_ID}</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.cell}>
+                                    <TouchableOpacity style={styles.cell} onPress={() => selectProduct(item)}>
                                         <Text>{item.CD_UNMED}</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.cell}>
+                                    <TouchableOpacity style={styles.cell} onPress={() => selectProduct(item)}>
                                         <Text>{item.CD_APLICACAO}</Text>
                                     </TouchableOpacity>
                                 </View>

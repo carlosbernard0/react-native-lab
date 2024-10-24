@@ -12,12 +12,12 @@ import axios from "axios";
 const Product = () => {
     const router = useRouter()
     const { setSelectedEstablishment, setIsShowSecondPicker, productSelected, company, token, selectedEstablishment,selectedTypeOfBusiness} = useContext(MyContext)
-    const [ countItem, setCountItem ] = useState(1)
+    const [ countItem, setCountItem ] = useState(parseInt(0))
     const [ listTypeValues, setListTypeValues] = useState([])
     const [ typeValueSelected, setTypeValueSelected] = useState(listTypeValues[0])
     const [ listInfosProducts, setListInfoProducts] = useState([])
-    const [ priceItem, setPriceItem] = useState()
-    const [ allValueItem, setAllValueItem] = useState("R$"+(priceItem*countItem)+',00')
+    const [ priceItem, setPriceItem] = useState(0)
+    const [ allValueItem, setAllValueItem] = useState()
     const [ availableCount, setAvailableCount] = useState(0)
 
     const urlProduct = `https://siscandes2v6.sispro.com.br/SisproERPCloud/Service_Private/React/SpReact2JapuraWS/api/Produto/Get?empresa=${company}&estab=${selectedEstablishment.CD_ESTAB}&tipoNegoc=${selectedTypeOfBusiness.CD_NEGOC_TIPO}&idItem=${productSelected.CD_ITEM_ID}`
@@ -32,14 +32,12 @@ const Product = () => {
             })
 
             setListInfoProducts(response.data.ProdutoList);
-            setPriceItem(listInfosProducts[0].VL_LISPCO_ITEM)
+            console.log(response.data.ProdutoList)
 
         }catch(error){
             console.log(error)
         }
     }
-
-
 
     const backToHome = () => {
         setSelectedEstablishment('')
@@ -48,18 +46,23 @@ const Product = () => {
     }
 
     const lessCountItem = () => {
-         if(countItem <= 1) return
+        if(countItem <= 0) return
 
        setCountItem(countItem - 1);
     }
+    
     const moreCountItem = () => {
         setCountItem(countItem + 1)
     }
 
+  
+
     const handleChangeTypeValues = (value) => {
         setTypeValueSelected(value)
-        const cashPriceSplit = value.split(' ');
-        setPriceItem(cashPriceSplit[0]);
+        const cashPriceSplit = value.split(',');
+        const numbersPrice = cashPriceSplit[0].match(/\d+/g).join('');
+        setPriceItem(numbersPrice);
+        setAllValueItem(parseFloat(priceItem*countItem))
     }
 
     useEffect(()=>{
@@ -71,13 +74,14 @@ const Product = () => {
                     `R$${item.VL_LISPCO_ITEM},00 ${item.DS_PRECO}`
                 )
             )
-            setPriceItem("R$"+listInfosProducts[0].VL_LISPCO_ITEM+",00")
+            setAllValueItem(priceItem*countItem)
+            if(priceItem == 0) {
+                setPriceItem(listInfosProducts[0].VL_LISPCO_ITEM)
+            }
         }
 
 
-        setAllValueItem(priceItem * countItem )
-
-    },[countItem,listInfosProducts])
+    },[countItem,listInfosProducts,typeValueSelected])
 
     return(
         <SafeAreaView style={{flex: 1}}>
@@ -100,12 +104,12 @@ const Product = () => {
                         <Text>Disponivel</Text>
                         <Text>{availableCount}</Text>
                     </View>
-                    <TouchableOpacity style={styles.buttonMoreEstablishment}>
+                    <TouchableOpacity style={styles.buttonMoreEstablishment} onPress={() => router.push('/establishment')}>
                         <Text style={styles.textButton}>Demais estabelecimentos</Text>
                     </TouchableOpacity>
                     <View style={styles.contentRow}>
                         <Text style={styles.textBold}>Valor Unitário</Text>
-                        <Text>{priceItem}</Text>
+                        <Text>R${priceItem == undefined ? '0': `${priceItem}`},00</Text>
                     </View>
                     <View style={styles.contentRow}>
                         <Text style={styles.textBold}>Quantidade</Text>
@@ -137,7 +141,9 @@ const Product = () => {
                     </View>
                     <View style={styles.allValue}>
                         <Text style={{padding: 10}}>Valor Total Item</Text>
-                        <Text style={{...styles.textBold, letterSpacing: 1}}>{allValueItem}</Text>
+                        <Text style={{...styles.textBold, letterSpacing: 1}}>
+                            R${isNaN(allValueItem) ? '0' : `${allValueItem}`},00
+                        </Text>
                     </View>
                 </View>
             </View>

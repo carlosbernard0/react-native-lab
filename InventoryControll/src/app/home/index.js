@@ -115,7 +115,6 @@ const Home = () => {
 
     return(
         <SafeAreaView style={{flex: 1}}>  
-            <Text onPress={getListTypeBusiness}>MAKE A TEST WITH TYPEOFBUSINESS</Text>
             <View style={ styles.container}>
                 <View style={styles.header}>
                         <Text style={ styles.textHeader}>.</Text>

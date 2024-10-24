@@ -2,23 +2,50 @@ import { View,Text, SafeAreaView,TouchableOpacity, StyleSheet, FlatList } from "
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import { useRouter } from "expo-router"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import MyContext from "../context/MyContext"
+import axios from "axios"
 
 const listData = [
     {descricao: 'LUgar tal tal tal', quantidade: 10},{descricao: 'LUgar aqui ali ali', quantidade: 40}
 ]
 
+
 const Establishment = () => {
     const router = useRouter()
-    const { setSelectedEstablishment, setIsShowSecondPicker } = useContext(MyContext)
+    const { setSelectedEstablishment, setIsShowSecondPicker, token, productSelected, company} = useContext(MyContext)
+    const [listOthersEstab, setListOthersEstab] = useState([]) 
+    const saldoEtqTipo = 'GERAL'
 
+    const urlOtherEstablishment = `https://siscandes2v6.sispro.com.br/SisproERPCloud/Service_Private/React/SpReact2JapuraWS/api/OutroEstab/Get/?itemProd=${productSelected.CD_ITEM_ID}&saldoEtqTipo=${saldoEtqTipo}&empresa=${company}`
+
+    const getOtherEstablishment = async () => {
+        try{
+            const response = await axios.get(urlOtherEstablishment,{
+                headers: {
+                    Authorization: token
+                }
+            })
+
+            console.log(response.data.OutroEstab)
+            setListOthersEstab(response.data.OutroEstab)
+
+        }catch(error){
+            console.log(error)
+        }
+    }
 
     const backToHome = () => {
         setSelectedEstablishment('')
         setIsShowSecondPicker(false)
         router.push('/home')
     }
+
+    useEffect(()=>{
+        if(listOthersEstab.length == 0){
+            getOtherEstablishment()
+        }
+    },[]) 
 
     return(
         <SafeAreaView style={{flex: 1}}>
@@ -37,8 +64,8 @@ const Establishment = () => {
                     </View>
 
                     <View style={styles.productInfoContainer}>
-                        <Text style={styles.productDescTitle}>Descrição: </Text>
-                        <Text style={styles.productCodTitle}>COD: </Text>
+                        <Text style={styles.productDescTitle}>Descrição: {productSelected.DS_ITEM_ID}</Text>
+                        <Text style={styles.productCodTitle}>COD: {productSelected.CD_ITEM_ID}</Text>
                     </View>
 
                     
@@ -48,12 +75,12 @@ const Establishment = () => {
                             <Text style={{...styles.itemList, fontWeight: '800'}}>Quantidade</Text>
                         </View>
                         <FlatList
-                            data={listData}
-                            keyExtractor={(item => item)}
+                            data={listOthersEstab}
+                            keyExtractor={(item => item.OP_ITEM_PROD)}
                             renderItem={({item}) => (
                                 <View style={styles.row}>
-                                    <Text style={styles.itemList}>{item.descricao}</Text>
-                                    <Text style={styles.itemList}>{item.quantidade}</Text>
+                                    <Text style={styles.itemList}>{item.DS_DEPOSITO}</Text>
+                                    <Text style={styles.itemList}>{item.QT_SALDO_DISP}</Text>
                                 </View>
                             )}
                         />
@@ -103,10 +130,9 @@ const styles = StyleSheet.create({
     },
 
     productInfoContainer: {
-        width: '60%',
-        marginLeft: 20, 
-        flexDirection: "row",
-        justifyContent: 'space-around'
+        width: '100%',
+        padding: 10, 
+        justifyContent: 'space-around',
     },
 
     productCodTitle: {
@@ -120,7 +146,7 @@ const styles = StyleSheet.create({
     },
 
     list: {
-        padding: 30,
+        padding: 10,
     },
 
 

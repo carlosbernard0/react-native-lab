@@ -6,10 +6,6 @@ import { useContext, useEffect, useState } from "react"
 import MyContext from "../context/MyContext"
 import axios from "axios"
 
-const listData = [
-    {descricao: 'LUgar tal tal tal', quantidade: 10},{descricao: 'LUgar aqui ali ali', quantidade: 40}
-]
-
 
 const Establishment = () => {
     const router = useRouter()

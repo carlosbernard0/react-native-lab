@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.carlosbernardo.InventoryControll"
     },
     "web": {
       "favicon": "./assets/sispro-logo.png",
@@ -43,6 +44,11 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "30ceb94a-7dd5-4573-9d72-8273ddf9bead"
+      }
+    }
   }
 }
